@@ -7,7 +7,7 @@ async function connect() {
         const channel = await connection.createChannel();
 
         // Declaramos la cola desde la que vamos a consumir
-        const queueName = 'readingsQueue';
+        const queueName = 'mediciones';
         await channel.assertQueue(queueName);
 
         console.log(`Esperando mensajes en la cola ${queueName}...`);
@@ -19,8 +19,10 @@ async function connect() {
                     // Aquí podrías procesar el mensaje según tus necesidades
                     console.log("Mensaje recibido:", msg.content.toString());
 
+                    const MensajeObj = JSON.parse(msg.content.toString());
+
                     // Enviar el mensaje a una ruta específica
-                    await enviarMensaje('http://localhost:4000/api/readings', msg.content.toString());
+                    await enviarMensaje('http://localhost:3001/api/readings', MensajeObj);
 
                     // Confirmar que hemos procesado el mensaje
                     channel.ack(msg);
